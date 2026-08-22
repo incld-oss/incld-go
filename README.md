@@ -1,6 +1,6 @@
-# INCLD Go SDK
+# incld Go SDK
 
-Trusted-server Go client for the INCLD v1 API. The module path is `github.com/incld-oss/incld-go`; resource types live in the `client` package.
+Trusted-server Go client for the incld v1 API. The module path is `github.com/incld-oss/incld-go`; resource types live in the `client` package.
 
 ```go
 incld := client.NewClient(os.Getenv("INCLD_SECRET_KEY"))
@@ -25,7 +25,7 @@ incld.BaseURL = "https://api.incld.dev/v1"
 incld.HTTPClient = &http.Client{Timeout: 10 * time.Second}
 ```
 
-This is a trusted-server client; never send the secret key to a browser. To use INCLD React packages in a Go application, implement a same-origin proxy that authenticates your user, scopes reads, injects actor identity, and allowlists operations.
+This is a trusted-server client; never send the secret key to a browser. To use incld React packages in a Go application, implement a same-origin proxy that authenticates your user, scopes reads, injects actor identity, and allowlists operations.
 
 ## Services and methods
 
@@ -63,7 +63,7 @@ Use stable idempotency keys for retried creates and decisions. Collection method
 ```go
 var apiErr *client.APIError
 if errors.As(err, &apiErr) {
-    log.Printf("INCLD %d %s request=%s fields=%v",
+    log.Printf("incld %d %s request=%s fields=%v",
         apiErr.StatusCode, apiErr.Code, apiErr.RequestID, apiErr.Fields)
 }
 ```

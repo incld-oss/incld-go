@@ -10,7 +10,7 @@ import (
 	"net/url"
 )
 
-// Client is the main interface for interacting with the INCLD API.
+// Client is the main interface for interacting with the incld API.
 type Client struct {
 	BaseURL    string
 	APIKey     string
@@ -52,7 +52,7 @@ type APIError struct {
 }
 
 func (e *APIError) Error() string {
-	return fmt.Sprintf("INCLD API error %d (%s): %s", e.StatusCode, e.Code, e.Message)
+	return fmt.Sprintf("incld API error %d (%s): %s", e.StatusCode, e.Code, e.Message)
 }
 
 type RequestOptions struct {
