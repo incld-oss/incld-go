@@ -1,6 +1,6 @@
 # INCLD Go SDK
 
-Trusted-server Go client for the INCLD v1 API. The module path is `github.com/incld-dev/incld-go`; resource types live in the `client` package.
+Trusted-server Go client for the INCLD v1 API. The module path is `github.com/incld-oss/incld-go`; resource types live in the `client` package.
 
 ```go
 incld := client.NewClient(os.Getenv("INCLD_SECRET_KEY"))
@@ -71,7 +71,7 @@ if errors.As(err, &apiErr) {
 ## Verify signed delivery
 
 ```go
-import "github.com/incld-dev/incld-go/webhook"
+import "github.com/incld-oss/incld-go/webhook"
 
 func handleIncld(w http.ResponseWriter, r *http.Request) {
     event, err := webhook.VerifyAndParse(r, os.Getenv("INCLD_WEBHOOK_SECRET"))

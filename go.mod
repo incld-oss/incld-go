@@ -1,4 +1,4 @@
-module github.com/incld-dev/incld-go
+module github.com/incld-oss/incld-go
 
 go 1.25.13
 
