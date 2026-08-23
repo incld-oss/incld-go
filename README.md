@@ -1,15 +1,15 @@
 # incld Go SDK
 
-Trusted-server Go client for the incld v1 API. The module path is `github.com/incld-oss/incld-go`; resource types live in the `client` package.
+Trusted-server Go client for the incld v1 API. The module path is `github.com/incld-dev/incld-go`; resource types live in the `client` package.
 
 ```go
-incld := client.NewClient(os.Getenv("INCLD_SECRET_KEY"))
+admin := client.NewClient(os.Getenv("INCLD_SECRET_KEY"))
+incld := admin.WithScope("org_123", "user_123")
 
 schedule, err := incld.Schedules.CreateWithOptions(client.CreateScheduleParams{
-    ExternalUserID: "user_123",
-    Action:         "sync_contacts",
-    Recurrence:     recurrence,
-    Timezone:       "Australia/Melbourne",
+    Action:                 "sync_contacts",
+    Recurrence:             recurrence,
+    Timezone:               "Australia/Melbourne",
 }, &client.RequestOptions{Context: ctx, IdempotencyKey: requestID})
 ```
 
@@ -20,12 +20,14 @@ Public schedule commands reference an action identifier through `Action`; action
 ## Configure the client
 
 ```go
-incld := client.NewClient(os.Getenv("INCLD_SECRET_KEY"))
+admin := client.NewClient(os.Getenv("INCLD_SECRET_KEY"))
+incld := admin.WithScope("org_123", "user_123")
 incld.BaseURL = "https://api.incld.dev/v1"
 incld.HTTPClient = &http.Client{Timeout: 10 * time.Second}
 ```
 
-This is a trusted-server client; never send the secret key to a browser. To use incld React packages in a Go application, implement a same-origin proxy that authenticates your user, scopes reads, injects actor identity, and allowlists operations.
+This is a trusted-server client; never send the secret key to a browser. The value returned by `NewClient` is a project administrator client. Use `WithScope(organizationID, userID)` for end-user request paths or an empty `userID` for organization-wide server work. The API then constrains direct ID lookups as well as lists and mutations. To use incld React packages in a Go application, implement a same-origin proxy that authenticates the user, requires their active organization, injects both identities, and allowlists operations.
+`WithScope` requires a non-empty organization ID. Project-wide action definition remains an administrator operation and should run through the unscoped client during deployment or startup synchronization.
 
 ## Services and methods
 
@@ -71,7 +73,7 @@ if errors.As(err, &apiErr) {
 ## Verify signed delivery
 
 ```go
-import "github.com/incld-oss/incld-go/webhook"
+import "github.com/incld-dev/incld-go/webhook"
 
 func handleIncld(w http.ResponseWriter, r *http.Request) {
     event, err := webhook.VerifyAndParse(r, os.Getenv("INCLD_WEBHOOK_SECRET"))

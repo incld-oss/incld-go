@@ -8,13 +8,16 @@ import (
 	"io"
 	"net/http"
 	"net/url"
+	"strings"
 )
 
 // Client is the main interface for interacting with the incld API.
 type Client struct {
-	BaseURL    string
-	APIKey     string
-	HTTPClient *http.Client
+	BaseURL        string
+	APIKey         string
+	HTTPClient     *http.Client
+	organizationID string
+	userID         string
 
 	Schedules *SchedulesService
 	Actions   *ActionsService
@@ -23,6 +26,24 @@ type Client struct {
 	Approvals *ApprovalsService
 	Bulk      *BulkService
 	Audit     *AuditService
+}
+
+// WithScope returns a client copy whose requests are constrained to one external
+// organization and, when userID is non-empty, one end user.
+func (c *Client) WithScope(organizationID, userID string) *Client {
+	if strings.TrimSpace(organizationID) == "" {
+		panic("incld: WithScope requires a non-empty organization ID")
+	}
+	if userID != "" && strings.TrimSpace(userID) == "" {
+		panic("incld: WithScope user ID must not be whitespace")
+	}
+
+	scoped := NewClient(c.APIKey)
+	scoped.BaseURL = c.BaseURL
+	scoped.HTTPClient = c.HTTPClient
+	scoped.organizationID = organizationID
+	scoped.userID = userID
+	return scoped
 }
 
 // NewClient creates a new Client with the given API key.
@@ -102,6 +123,12 @@ func (c *Client) requestWithOptions(method, path string, body interface{}, query
 	}
 
 	req.Header.Set("Authorization", "Bearer "+c.APIKey)
+	if c.organizationID != "" {
+		req.Header.Set("Incld-Organization-Id", c.organizationID)
+	}
+	if c.userID != "" {
+		req.Header.Set("Incld-User-Id", c.userID)
+	}
 	req.Header.Set("Content-Type", "application/json")
 	req.Header.Set("Accept", "application/json")
 	if options != nil && options.IdempotencyKey != "" {

@@ -7,42 +7,45 @@ import (
 )
 
 type AuditEvent struct {
-	ID          string                 `json:"id"`
-	Component   string                 `json:"component"`
-	Type        string                 `json:"type"`
-	ActorID     string                 `json:"actor_id,omitempty"`
-	SubjectType string                 `json:"subject_type,omitempty"`
-	SubjectID   string                 `json:"subject_id,omitempty"`
-	Source      string                 `json:"source"`
-	Visibility  string                 `json:"visibility"`
-	Data        map[string]interface{} `json:"data"`
-	OccurredAt  string                 `json:"occurred_at"`
-	InsertedAt  string                 `json:"inserted_at"`
+	ID                     string                 `json:"id"`
+	Component              string                 `json:"component"`
+	Type                   string                 `json:"type"`
+	ActorID                string                 `json:"actor_id,omitempty"`
+	ExternalOrganizationID string                 `json:"external_organization_id,omitempty"`
+	SubjectType            string                 `json:"subject_type,omitempty"`
+	SubjectID              string                 `json:"subject_id,omitempty"`
+	Source                 string                 `json:"source"`
+	Visibility             string                 `json:"visibility"`
+	Data                   map[string]interface{} `json:"data"`
+	OccurredAt             string                 `json:"occurred_at"`
+	InsertedAt             string                 `json:"inserted_at"`
 }
 
 type ListAuditEventsParams struct {
-	Component   string
-	Type        string
-	TypePrefix  string
-	ActorID     string
-	SubjectType string
-	SubjectID   string
-	Since       string
-	Until       string
-	Limit       int
-	Cursor      string
+	ExternalOrganizationID string
+	Component              string
+	Type                   string
+	TypePrefix             string
+	ActorID                string
+	SubjectType            string
+	SubjectID              string
+	Since                  string
+	Until                  string
+	Limit                  int
+	Cursor                 string
 }
 
 type CreateAuditEventParams struct {
-	Type             string                 `json:"type"`
-	ActorID          string                 `json:"actor_id,omitempty"`
-	SubjectType      string                 `json:"subject_type,omitempty"`
-	SubjectID        string                 `json:"subject_id,omitempty"`
-	Visibility       string                 `json:"visibility,omitempty"`
-	ParticipantIDs   []string               `json:"participant_ids,omitempty"`
-	AllowedViewerIDs []string               `json:"allowed_viewer_ids,omitempty"`
-	Data             map[string]interface{} `json:"data,omitempty"`
-	OccurredAt       string                 `json:"occurred_at,omitempty"`
+	ExternalOrganizationID string                 `json:"external_organization_id,omitempty"`
+	Type                   string                 `json:"type"`
+	ActorID                string                 `json:"actor_id,omitempty"`
+	SubjectType            string                 `json:"subject_type,omitempty"`
+	SubjectID              string                 `json:"subject_id,omitempty"`
+	Visibility             string                 `json:"visibility,omitempty"`
+	ParticipantIDs         []string               `json:"participant_ids,omitempty"`
+	AllowedViewerIDs       []string               `json:"allowed_viewer_ids,omitempty"`
+	Data                   map[string]interface{} `json:"data,omitempty"`
+	OccurredAt             string                 `json:"occurred_at,omitempty"`
 }
 
 type AuditService struct{ client *Client }
@@ -50,6 +53,9 @@ type AuditService struct{ client *Client }
 func (s *AuditService) List(params *ListAuditEventsParams) (*Page[AuditEvent], error) {
 	query := url.Values{}
 	if params != nil {
+		if params.ExternalOrganizationID != "" {
+			query.Set("external_organization_id", params.ExternalOrganizationID)
+		}
 		if params.Component != "" {
 			query.Set("component", params.Component)
 		}

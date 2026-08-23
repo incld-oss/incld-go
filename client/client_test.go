@@ -58,3 +58,30 @@ func TestClientRequest_Error(t *testing.T) {
 	assert.Equal(t, http.StatusBadRequest, apiErr.StatusCode)
 	assert.Equal(t, "invalid request", apiErr.Message)
 }
+
+func TestClientWithScopeSendsProtectedTenantHeaders(t *testing.T) {
+	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		assert.Equal(t, "org_trusted", r.Header.Get("Incld-Organization-Id"))
+		assert.Equal(t, "user_trusted", r.Header.Get("Incld-User-Id"))
+		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(http.StatusOK)
+		_, _ = w.Write([]byte(`{"success": true}`))
+	}))
+	defer server.Close()
+
+	client := NewClient("test_api_key")
+	client.BaseURL = server.URL
+	scoped := client.WithScope("org_trusted", "user_trusted")
+
+	var result map[string]bool
+	err := scoped.request("GET", "/", nil, nil, &result)
+	assert.NoError(t, err)
+	assert.True(t, result["success"])
+}
+
+func TestClientWithScopeRequiresOrganization(t *testing.T) {
+	client := NewClient("test_api_key")
+	assert.PanicsWithValue(t, "incld: WithScope requires a non-empty organization ID", func() {
+		client.WithScope("", "user_trusted")
+	})
+}

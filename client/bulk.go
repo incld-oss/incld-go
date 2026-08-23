@@ -16,18 +16,19 @@ type BulkProgress struct {
 }
 
 type BulkOperation struct {
-	ID          string                 `json:"id"`
-	ProjectID   string                 `json:"project_id"`
-	Action      string                 `json:"action"`
-	Status      string                 `json:"status"`
-	Metadata    map[string]interface{} `json:"metadata"`
-	ChunkSize   int                    `json:"chunk_size"`
-	Progress    BulkProgress           `json:"progress"`
-	StartedAt   *string                `json:"started_at"`
-	CompletedAt *string                `json:"completed_at"`
-	CancelledAt *string                `json:"cancelled_at"`
-	InsertedAt  string                 `json:"inserted_at"`
-	UpdatedAt   string                 `json:"updated_at"`
+	ID                     string                 `json:"id"`
+	ProjectID              string                 `json:"project_id"`
+	ExternalOrganizationID string                 `json:"external_organization_id,omitempty"`
+	Action                 string                 `json:"action"`
+	Status                 string                 `json:"status"`
+	Metadata               map[string]interface{} `json:"metadata"`
+	ChunkSize              int                    `json:"chunk_size"`
+	Progress               BulkProgress           `json:"progress"`
+	StartedAt              *string                `json:"started_at"`
+	CompletedAt            *string                `json:"completed_at"`
+	CancelledAt            *string                `json:"cancelled_at"`
+	InsertedAt             string                 `json:"inserted_at"`
+	UpdatedAt              string                 `json:"updated_at"`
 }
 
 type BulkChunk struct {
@@ -55,17 +56,19 @@ type BulkEvent struct {
 }
 
 type CreateBulkOperationParams struct {
-	Action    string                   `json:"action"`
-	Items     []map[string]interface{} `json:"items"`
-	ChunkSize int                      `json:"chunk_size,omitempty"`
-	Metadata  map[string]interface{}   `json:"metadata,omitempty"`
+	ExternalOrganizationID string                   `json:"external_organization_id,omitempty"`
+	Action                 string                   `json:"action"`
+	Items                  []map[string]interface{} `json:"items"`
+	ChunkSize              int                      `json:"chunk_size,omitempty"`
+	Metadata               map[string]interface{}   `json:"metadata,omitempty"`
 }
 
 type ListBulkOperationsParams struct {
-	Status string
-	Action string
-	Limit  int
-	Cursor string
+	ExternalOrganizationID string
+	Status                 string
+	Action                 string
+	Limit                  int
+	Cursor                 string
 }
 
 type BulkService struct{ client *Client }
@@ -73,6 +76,9 @@ type BulkService struct{ client *Client }
 func (s *BulkService) List(params *ListBulkOperationsParams) (*Page[BulkOperation], error) {
 	query := url.Values{}
 	if params != nil {
+		if params.ExternalOrganizationID != "" {
+			query.Set("external_organization_id", params.ExternalOrganizationID)
+		}
 		if params.Status != "" {
 			query.Set("status", params.Status)
 		}

@@ -34,6 +34,9 @@ func (s *SchedulesService) List(params *ListParams) (*Page[Schedule], error) {
 		if params.ExternalUserID != "" {
 			query.Add("external_user_id", params.ExternalUserID)
 		}
+		if params.ExternalOrganizationID != "" {
+			query.Add("external_organization_id", params.ExternalOrganizationID)
+		}
 		if params.Action != "" {
 			query.Add("action", params.Action)
 		}

@@ -7,12 +7,13 @@ import (
 )
 
 type ListRunsParams struct {
-	Limit          int
-	Cursor         string
-	Status         string
-	Action         string
-	ScheduleID     string
-	ExternalUserID string
+	Limit                  int
+	Cursor                 string
+	Status                 string
+	Action                 string
+	ScheduleID             string
+	ExternalUserID         string
+	ExternalOrganizationID string
 }
 
 type RunsPage = Page[Run]
@@ -49,6 +50,9 @@ func (s *RunsService) List(params *ListRunsParams) (*RunsPage, error) {
 		}
 		if params.ExternalUserID != "" {
 			query.Set("external_user_id", params.ExternalUserID)
+		}
+		if params.ExternalOrganizationID != "" {
+			query.Set("external_organization_id", params.ExternalOrganizationID)
 		}
 	}
 

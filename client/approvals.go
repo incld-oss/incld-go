@@ -52,54 +52,57 @@ type ApprovalPolicySnapshot struct {
 }
 
 type Approval struct {
-	ID             string                 `json:"id"`
-	ProjectID      string                 `json:"project_id"`
-	ResourceType   string                 `json:"resource_type"`
-	ResourceID     string                 `json:"resource_id"`
-	Action         string                 `json:"action"`
-	RequesterID    string                 `json:"requester_id,omitempty"`
-	ApproverID     string                 `json:"approver_id,omitempty"`
-	Status         ApprovalStatus         `json:"status"`
-	Title          string                 `json:"title,omitempty"`
-	Description    string                 `json:"description,omitempty"`
-	Metadata       map[string]interface{} `json:"metadata,omitempty"`
-	Revision       int                    `json:"revision,omitempty"`
-	PolicyID       string                 `json:"policy_id,omitempty"`
-	PolicySnapshot ApprovalPolicySnapshot `json:"policy_snapshot,omitempty"`
-	IdempotencyKey string                 `json:"idempotency_key,omitempty"`
-	ExpiresAt      string                 `json:"expires_at,omitempty"`
-	ResolvedAt     string                 `json:"resolved_at,omitempty"`
-	CancelledAt    string                 `json:"cancelled_at,omitempty"`
-	RevokedAt      string                 `json:"revoked_at,omitempty"`
-	Decisions      []ApprovalDecision     `json:"decisions,omitempty"`
-	Events         []ApprovalEvent        `json:"events,omitempty"`
-	InsertedAt     string                 `json:"inserted_at,omitempty"`
-	UpdatedAt      string                 `json:"updated_at,omitempty"`
+	ID                     string                 `json:"id"`
+	ProjectID              string                 `json:"project_id"`
+	ExternalOrganizationID string                 `json:"external_organization_id,omitempty"`
+	ResourceType           string                 `json:"resource_type"`
+	ResourceID             string                 `json:"resource_id"`
+	Action                 string                 `json:"action"`
+	RequesterID            string                 `json:"requester_id,omitempty"`
+	ApproverID             string                 `json:"approver_id,omitempty"`
+	Status                 ApprovalStatus         `json:"status"`
+	Title                  string                 `json:"title,omitempty"`
+	Description            string                 `json:"description,omitempty"`
+	Metadata               map[string]interface{} `json:"metadata,omitempty"`
+	Revision               int                    `json:"revision,omitempty"`
+	PolicyID               string                 `json:"policy_id,omitempty"`
+	PolicySnapshot         ApprovalPolicySnapshot `json:"policy_snapshot,omitempty"`
+	IdempotencyKey         string                 `json:"idempotency_key,omitempty"`
+	ExpiresAt              string                 `json:"expires_at,omitempty"`
+	ResolvedAt             string                 `json:"resolved_at,omitempty"`
+	CancelledAt            string                 `json:"cancelled_at,omitempty"`
+	RevokedAt              string                 `json:"revoked_at,omitempty"`
+	Decisions              []ApprovalDecision     `json:"decisions,omitempty"`
+	Events                 []ApprovalEvent        `json:"events,omitempty"`
+	InsertedAt             string                 `json:"inserted_at,omitempty"`
+	UpdatedAt              string                 `json:"updated_at,omitempty"`
 }
 
 type ApprovalPolicy struct {
-	ID                string             `json:"id"`
-	ProjectID         string             `json:"project_id"`
-	ResourcePattern   string             `json:"resource_pattern"`
-	AllowedApprovers  []string           `json:"allowed_approvers"`
-	Mode              ApprovalPolicyMode `json:"mode"`
-	RequiredApprovals int                `json:"required_approvals"`
-	AllowSelfApproval bool               `json:"allow_self_approval"`
-	Revision          int                `json:"revision"`
-	InsertedAt        string             `json:"inserted_at,omitempty"`
-	UpdatedAt         string             `json:"updated_at,omitempty"`
+	ID                     string             `json:"id"`
+	ProjectID              string             `json:"project_id"`
+	ExternalOrganizationID string             `json:"external_organization_id,omitempty"`
+	ResourcePattern        string             `json:"resource_pattern"`
+	AllowedApprovers       []string           `json:"allowed_approvers"`
+	Mode                   ApprovalPolicyMode `json:"mode"`
+	RequiredApprovals      int                `json:"required_approvals"`
+	AllowSelfApproval      bool               `json:"allow_self_approval"`
+	Revision               int                `json:"revision"`
+	InsertedAt             string             `json:"inserted_at,omitempty"`
+	UpdatedAt              string             `json:"updated_at,omitempty"`
 }
 
 type CreateApprovalParams struct {
-	ResourceType   string                 `json:"resource_type"`
-	ResourceID     string                 `json:"resource_id"`
-	Action         string                 `json:"action"`
-	RequesterID    string                 `json:"requester_id,omitempty"`
-	Title          string                 `json:"title,omitempty"`
-	Description    string                 `json:"description,omitempty"`
-	Metadata       map[string]interface{} `json:"metadata,omitempty"`
-	ExpiresAt      string                 `json:"expires_at,omitempty"`
-	IdempotencyKey string                 `json:"idempotency_key,omitempty"`
+	ExternalOrganizationID string                 `json:"external_organization_id,omitempty"`
+	ResourceType           string                 `json:"resource_type"`
+	ResourceID             string                 `json:"resource_id"`
+	Action                 string                 `json:"action"`
+	RequesterID            string                 `json:"requester_id,omitempty"`
+	Title                  string                 `json:"title,omitempty"`
+	Description            string                 `json:"description,omitempty"`
+	Metadata               map[string]interface{} `json:"metadata,omitempty"`
+	ExpiresAt              string                 `json:"expires_at,omitempty"`
+	IdempotencyKey         string                 `json:"idempotency_key,omitempty"`
 }
 
 type UpdateApprovalParams struct {
@@ -110,12 +113,13 @@ type UpdateApprovalParams struct {
 }
 
 type ListApprovalsParams struct {
-	ResourceID  string
-	RequesterID string
-	ApproverID  string
-	Status      ApprovalStatus
-	Limit       int
-	Cursor      string
+	ExternalOrganizationID string
+	ResourceID             string
+	RequesterID            string
+	ApproverID             string
+	Status                 ApprovalStatus
+	Limit                  int
+	Cursor                 string
 }
 
 type ApprovalCheck struct {
@@ -125,19 +129,21 @@ type ApprovalCheck struct {
 }
 
 type CreateApprovalPolicyParams struct {
-	ResourcePattern   string             `json:"resource_pattern"`
-	AllowedApprovers  []string           `json:"allowed_approvers"`
-	Mode              ApprovalPolicyMode `json:"mode,omitempty"`
-	RequiredApprovals int                `json:"required_approvals,omitempty"`
-	AllowSelfApproval bool               `json:"allow_self_approval"`
+	ExternalOrganizationID string             `json:"external_organization_id,omitempty"`
+	ResourcePattern        string             `json:"resource_pattern"`
+	AllowedApprovers       []string           `json:"allowed_approvers"`
+	Mode                   ApprovalPolicyMode `json:"mode,omitempty"`
+	RequiredApprovals      int                `json:"required_approvals,omitempty"`
+	AllowSelfApproval      bool               `json:"allow_self_approval"`
 }
 
 type UpdateApprovalPolicyParams struct {
-	ResourcePattern   *string             `json:"resource_pattern,omitempty"`
-	AllowedApprovers  *[]string           `json:"allowed_approvers,omitempty"`
-	Mode              *ApprovalPolicyMode `json:"mode,omitempty"`
-	RequiredApprovals *int                `json:"required_approvals,omitempty"`
-	AllowSelfApproval *bool               `json:"allow_self_approval,omitempty"`
+	ExternalOrganizationID *string             `json:"external_organization_id,omitempty"`
+	ResourcePattern        *string             `json:"resource_pattern,omitempty"`
+	AllowedApprovers       *[]string           `json:"allowed_approvers,omitempty"`
+	Mode                   *ApprovalPolicyMode `json:"mode,omitempty"`
+	RequiredApprovals      *int                `json:"required_approvals,omitempty"`
+	AllowSelfApproval      *bool               `json:"allow_self_approval,omitempty"`
 }
 
 type ApprovalsService struct{ client *Client }
@@ -145,6 +151,9 @@ type ApprovalsService struct{ client *Client }
 func (s *ApprovalsService) List(params *ListApprovalsParams) (*Page[Approval], error) {
 	query := url.Values{}
 	if params != nil {
+		if params.ExternalOrganizationID != "" {
+			query.Set("external_organization_id", params.ExternalOrganizationID)
+		}
 		if params.ResourceID != "" {
 			query.Set("resource_id", params.ResourceID)
 		}
@@ -182,7 +191,11 @@ func (s *ApprovalsService) Get(id string) (*Approval, error) {
 }
 
 func (s *ApprovalsService) Check(resourceType, resourceID, action, requesterID string) (*ApprovalCheck, error) {
-	body := map[string]string{"resource_type": resourceType, "resource_id": resourceID, "action": action, "requester_id": requesterID}
+	return s.CheckForOrganization("", resourceType, resourceID, action, requesterID)
+}
+
+func (s *ApprovalsService) CheckForOrganization(organizationID, resourceType, resourceID, action, requesterID string) (*ApprovalCheck, error) {
+	body := map[string]string{"external_organization_id": organizationID, "resource_type": resourceType, "resource_id": resourceID, "action": action, "requester_id": requesterID}
 	var resp struct {
 		Data ApprovalCheck `json:"data"`
 	}

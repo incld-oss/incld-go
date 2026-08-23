@@ -94,11 +94,12 @@ type UpdateScheduleParams struct {
 }
 
 type ListSchedulesParams struct {
-	ExternalUserID string
-	Action         string
-	Status         string
-	Limit          int
-	Cursor         string
+	ExternalUserID         string
+	ExternalOrganizationID string
+	Action                 string
+	Status                 string
+	Limit                  int
+	Cursor                 string
 }
 
 // ListParams is retained as a source-compatible alias.
@@ -118,22 +119,23 @@ const (
 )
 
 type Run struct {
-	ID               string                 `json:"id"`
-	ExternalUserID   string                 `json:"external_user_id,omitempty"`
-	ScheduleID       string                 `json:"schedule_id"`
-	Action           ActionSummary          `json:"action"`
-	Status           RunStatus              `json:"status"`
-	NominalAt        *time.Time             `json:"nominal_at,omitempty"`
-	ScheduledAt      *time.Time             `json:"scheduled_at,omitempty"`
-	StartedAt        *time.Time             `json:"started_at,omitempty"`
-	CompletedAt      *time.Time             `json:"completed_at,omitempty"`
-	AttemptCount     int                    `json:"attempt_count,omitempty"`
-	PayloadSnapshot  map[string]interface{} `json:"payload_snapshot,omitempty"`
-	Error            *string                `json:"error,omitempty"`
-	IdempotencyKey   string                 `json:"idempotency_key,omitempty"`
-	ScheduleRevision int                    `json:"schedule_revision,omitempty"`
-	InsertedAt       *time.Time             `json:"inserted_at,omitempty"`
-	UpdatedAt        *time.Time             `json:"updated_at,omitempty"`
+	ID                     string                 `json:"id"`
+	ExternalUserID         string                 `json:"external_user_id,omitempty"`
+	ExternalOrganizationID string                 `json:"external_organization_id,omitempty"`
+	ScheduleID             string                 `json:"schedule_id"`
+	Action                 ActionSummary          `json:"action"`
+	Status                 RunStatus              `json:"status"`
+	NominalAt              *time.Time             `json:"nominal_at,omitempty"`
+	ScheduledAt            *time.Time             `json:"scheduled_at,omitempty"`
+	StartedAt              *time.Time             `json:"started_at,omitempty"`
+	CompletedAt            *time.Time             `json:"completed_at,omitempty"`
+	AttemptCount           int                    `json:"attempt_count,omitempty"`
+	PayloadSnapshot        map[string]interface{} `json:"payload_snapshot,omitempty"`
+	Error                  *string                `json:"error,omitempty"`
+	IdempotencyKey         string                 `json:"idempotency_key,omitempty"`
+	ScheduleRevision       int                    `json:"schedule_revision,omitempty"`
+	InsertedAt             *time.Time             `json:"inserted_at,omitempty"`
+	UpdatedAt              *time.Time             `json:"updated_at,omitempty"`
 }
 
 type ActionSummary struct {
