@@ -15,7 +15,7 @@ schedule, err := incld.Schedules.CreateWithOptions(client.CreateScheduleParams{
 
 The client exposes Actions, Schedules, Runs, Sessions, Approvals, Approval Policies, Audit, and Bulk operations. List calls return `Page[T]` with cursor metadata. API failures return typed `APIError` values containing status, stable code, safe message, optional validation fields, and request ID.
 
-Public schedule commands reference an action identifier through `Action`; action database UUIDs are not part of the contract. Approval checks require resource type, resource ID, action, and requester identity on trusted server calls. Audit uses `/audit-events`, and Bulk uses `/bulk-operations`.
+Public schedule commands reference an action identifier through `Action`; action database UUIDs are not part of the contract. Approval checks require resource type, resource ID, action, and requester identity on trusted server calls. Audit uses `/audit-events`; `Audit.Tombstone` provides trusted-server PII erasure with a reason-coded record. Bulk uses `/bulk-operations`.
 
 ## Configure the client
 
@@ -38,7 +38,7 @@ This is a trusted-server client; never send the secret key to a browser. The val
 | `Runs` | `Get`, `List`, `ListPage` |
 | `Approvals` | `List`, `Get`, `Check`, `Create`, `CreateWithOptions`, `Update`, `Delete`, `Decide`, `DecideWithOptions`, `Approve`, `Reject`, `Cancel`, `Revoke`, `Events` |
 | Approval policies | `ListPolicies`, `GetPolicy`, `CreatePolicy`, `UpdatePolicy`, `DeletePolicy` on `Approvals` |
-| `Audit` | `List`, `Get`, `Create` |
+| `Audit` | `List`, `Get`, `Create`, `Tombstone` |
 | `Bulk` | `List`, `Get`, `Create`, `CreateWithOptions`, `Chunks`, `Events`, `Cancel` |
 | `Sessions` | `Create` |
 

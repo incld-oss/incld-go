@@ -104,7 +104,7 @@ func (s *SchedulesService) ListRuns(scheduleID string) (*Page[Run], error) {
 	return &resp, nil
 }
 
-// ListEvents returns the immutable Audit lifecycle history for one schedule.
+// ListEvents returns the append-only Audit lifecycle history for one schedule.
 func (s *SchedulesService) ListEvents(scheduleID string) (*Page[AuditEvent], error) {
 	var resp Page[AuditEvent]
 	if err := s.client.request("GET", fmt.Sprintf("/schedules/%s/events", scheduleID), nil, nil, &resp); err != nil {

@@ -17,8 +17,24 @@ type AuditEvent struct {
 	Source                 string                 `json:"source"`
 	Visibility             string                 `json:"visibility"`
 	Data                   map[string]interface{} `json:"data"`
+	TombstonedAt           string                 `json:"tombstoned_at,omitempty"`
+	TombstoneReason        string                 `json:"tombstone_reason,omitempty"`
+	TombstoneEventID       string                 `json:"tombstone_event_id,omitempty"`
 	OccurredAt             string                 `json:"occurred_at"`
 	InsertedAt             string                 `json:"inserted_at"`
+}
+
+type AuditTombstoneReason string
+
+const (
+	AuditTombstoneDataSubjectErasure AuditTombstoneReason = "data_subject_erasure"
+	AuditTombstoneSensitiveData      AuditTombstoneReason = "sensitive_data"
+	AuditTombstoneCustomerRequest    AuditTombstoneReason = "customer_request"
+)
+
+type TombstoneAuditEventParams struct {
+	Reason  AuditTombstoneReason `json:"reason"`
+	ActorID string               `json:"actor_id,omitempty"`
 }
 
 type ListAuditEventsParams struct {
@@ -109,6 +125,19 @@ func (s *AuditService) Create(params CreateAuditEventParams, options *RequestOpt
 		Data AuditEvent `json:"data"`
 	}
 	if err := s.client.requestWithOptions("POST", "/audit-events", params, nil, &response, options); err != nil {
+		return nil, err
+	}
+	return &response.Data, nil
+}
+
+// Tombstone erases PII-bearing fields while preserving the event envelope and
+// appending a durable reason-coded record. It requires a trusted server client.
+func (s *AuditService) Tombstone(id string, params TombstoneAuditEventParams, options *RequestOptions) (*AuditEvent, error) {
+	var response struct {
+		Data AuditEvent `json:"data"`
+	}
+	path := fmt.Sprintf("/audit-events/%s/tombstone", url.PathEscape(id))
+	if err := s.client.requestWithOptions("POST", path, params, nil, &response, options); err != nil {
 		return nil, err
 	}
 	return &response.Data, nil
